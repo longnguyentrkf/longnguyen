@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.ContentScale.Companion.Crop
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
@@ -38,7 +39,7 @@ fun ImageDetail(
     body: String? = null,
     resource: DrawableResource,
     buttonText: String? = null,
-    buttonAction: () -> Unit,
+    buttonAction: () -> Unit = {},
     maxWidth: Dp,
     fontScale: Float = fontScale(maxWidth.value),
     titleFontSize: TextUnit = Typography.titleSmall.fontSize * fontScale,
@@ -55,6 +56,7 @@ fun ImageDetail(
     shape: Shape = Shape.medium,
     aspectRatio: Float = width / height,
     list: List<String> = listOf(),
+    imageContentScale: ContentScale = Crop
 ) {
     val imageModifier = Modifier
         .clip(shape = shape)
@@ -71,7 +73,7 @@ fun ImageDetail(
                 modifier = imageModifier,
                 painter = painterResource(resource = resource),
                 contentDescription = null,
-                contentScale = Crop
+                contentScale = imageContentScale
             )
 
             Column(verticalArrangement = Arrangement.spacedBy(space = Space().large_32)) {
@@ -121,8 +123,7 @@ fun ImageDetail(
                     OutlinedButton(onClick = buttonAction) {
                         Text(
                             text = buttonText,
-                            fontSize = downloadFontSize,
-                            lineHeight = downloadLineHeight
+                            fontSize = downloadFontSize
                         )
                     }
                 }
@@ -138,7 +139,7 @@ fun ImageDetail(
                 modifier = imageModifier.weight(weight = 0.5f),
                 painter = painterResource(resource = resource),
                 contentDescription = null,
-                contentScale = Crop
+                contentScale = imageContentScale
             )
 
             Spacer(modifier = Modifier.width(width = Space().large_32))
@@ -194,8 +195,7 @@ fun ImageDetail(
                     OutlinedButton(onClick = buttonAction) {
                         Text(
                             text = buttonText,
-                            fontSize = downloadFontSize,
-                            lineHeight = downloadLineHeight
+                            fontSize = downloadFontSize
                         )
                     }
                 }

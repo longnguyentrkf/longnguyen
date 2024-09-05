@@ -1,6 +1,5 @@
 package space.kingfu.longnguyen.topBar
 
-import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,7 +18,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,7 +26,6 @@ import androidx.compose.ui.graphics.Color.Companion.Transparent
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.launch
 import space.kingfu.longnguyen.ui.theme.ThemeType
 import space.kingfu.longnguyen.ui.theme.Typography
 
@@ -42,9 +39,10 @@ fun MenuTopBar(
     iconContainerColor: Color = Transparent,
     theme: ThemeType,
     setTheme: (ThemeType) -> Unit,
-    scrollState: ScrollState
+    titleOnClick: () -> Unit = {},
+    actionOnClick: () -> Unit = {},
+    actionText: String? = null
 ) {
-    val scope = rememberCoroutineScope()
 
     TopAppBar(
         scrollBehavior = scrollBehavior,
@@ -60,11 +58,7 @@ fun MenuTopBar(
                         text = title,
                         modifier = Modifier
                             .clip(shape = CircleShape)
-                            .clickable {
-                                scope.launch {
-                                    scrollState.animateScrollTo(value = 0)
-                                }
-                            }
+                            .clickable { titleOnClick() }
                             .padding(vertical = 8.dp, horizontal = 16.dp),
                         textAlign = TextAlign.Center,
                         fontWeight = FontWeight.Bold,
@@ -87,18 +81,16 @@ fun MenuTopBar(
             }
         },
         actions = {
-            OutlinedButton(
-                modifier = Modifier.padding(end = 8.dp),
-                onClick = {
-                    scope.launch {
-                        scrollState.animateScrollTo(value = scrollState.maxValue)
-                    }
+            if(actionText != null) {
+                OutlinedButton(
+                    modifier = Modifier.padding(end = 8.dp),
+                    onClick = actionOnClick
+                ) {
+                    Text(
+                        text = actionText,
+                        style = Typography.bodySmall
+                    )
                 }
-            ) {
-                Text(
-                    text = "Hire me",
-                    style = Typography.bodySmall
-                )
             }
         }
     )

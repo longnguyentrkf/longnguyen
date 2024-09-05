@@ -18,13 +18,16 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.launch
 import longnguyen.composeapp.generated.resources.Res
 import longnguyen.composeapp.generated.resources.clok
 import longnguyen.composeapp.generated.resources.imaginate
@@ -59,6 +62,7 @@ fun HomeScreen(
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val uriHandler = LocalUriHandler.current
     val focusManager = LocalFocusManager.current
+    val scope = rememberCoroutineScope()
 
     LaunchedEffect(key1 = scrollState.isScrollInProgress) {
         if (scrollState.isScrollInProgress) focusManager.clearFocus()
@@ -73,7 +77,15 @@ fun HomeScreen(
                 scrollBehavior = scrollBehavior,
                 theme = theme,
                 setTheme = setTheme,
-                scrollState = scrollState
+                titleOnClick = { scope.launch {
+                    scrollState.animateScrollTo(value = 0)
+                }},
+                actionOnClick = {
+                    scope.launch {
+                        scrollState.animateScrollTo(value = scrollState.maxValue)
+                    }
+                },
+                actionText = "Hire me"
             )
         }
     ) {
@@ -107,7 +119,6 @@ fun HomeScreen(
                     verticalArrangement = Arrangement.spacedBy(space = Space().xxLarge_128)
                 ) {
 
-
                     Column(verticalArrangement = Arrangement.spacedBy(space = Space().large_32)) {
                         Text(
                             modifier = Modifier.fillMaxWidth(),
@@ -118,6 +129,19 @@ fun HomeScreen(
                         )
 
                         ImageDetail(
+                            title = "KingFu.space",
+                            subTitle = "Web Application",
+                            body = "A sleek designed website showcasing achievements, experiences, and services.",
+                            buttonText = "View",
+                            resource = Res.drawable.kingfu_rectangle,
+                            buttonAction = {
+                                val url = "https://kingfu.space"
+                                uriHandler.openUri(uri = url)
+                            },
+                            maxWidth = maxWidth
+                        )
+
+                        DetailImage(
                             title = "Imaginate",
                             subTitle = "Android Application",
                             body = "Imaginate brings creative innovation to life with AI-generated masterpieces that " +
@@ -132,7 +156,7 @@ fun HomeScreen(
                             maxWidth = maxWidth
                         )
 
-                        DetailImage(
+                        ImageDetail(
                             title = "WeatherAI",
                             subTitle = "Android Application",
                             body = "WeatherAI is a sleek weather app offering accurate 7-day forecasts and hourly updates. " +
@@ -147,7 +171,7 @@ fun HomeScreen(
                             maxWidth = maxWidth
                         )
 
-                        ImageDetail(
+                        DetailImage(
                             title = "Clok",
                             subTitle = "Android Application",
                             body = "Clok is a versatile time management app that combines a Stopwatch and Timer with " +
@@ -219,12 +243,6 @@ fun HomeScreen(
                                 "Native Android Engineer",
                                 "Mentor"
                             ),
-                            buttonText = "View",
-                            buttonAction = {
-                                val url =
-                                    "https://play.google.com/store/apps/dev?id=6685291617439812065&hl=en_US"
-                                uriHandler.openUri(uri = url)
-                            },
                             resource = Res.drawable.kingfu_rectangle,
                             maxWidth = maxWidth,
                         )
